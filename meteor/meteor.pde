@@ -1,11 +1,12 @@
 //import processing.sound.*;
 
-int ax,ay,x,y,tarx,tary,movrand, ammu;
+int ax,ay,x,y,tarx,tary,movrand, ammu,hp;
 int direct = 1;
 int[] astx = new int[100];
 float[] asty = new float[100];
 float[] msx = new float[1];
 float[] msy = new float[1];
+
 boolean trig = false;
 boolean dead = false;
 float bulx,buly;
@@ -17,8 +18,15 @@ int basey;
 int astDest;
 int triX;
 int triY;
+int randstarx;
+int randstary;
+int starprint = 1000;
+int stars;
+int [] starx = new int [starprint];
+int [] stary = new int [starprint];
 
 //BOSS
+boolean bosstime;
 int speed;
 int bossatk;
 int pointx, pointy, npointx,npointy;
@@ -54,7 +62,11 @@ class Boom{
 
 
 void setup(){
+  
+  stars =0;
+  hp = 10;
   //BOSS
+  bosstime=false;
   speed = 10;
   //GAME
  
@@ -90,20 +102,39 @@ void setup(){
     
     
   }
+//Show Stars
+  for(int i = 0; i < starprint; i++){
+    
+    randstarx = int(random(0,width));
+    starx[i] = randstarx;
+    
+    randstary = int(random(0, height));
+    stary[i] = randstary;
+
+  }
   
   
 }
 void draw(){
   //println(ammu);
-  background(255);
+  background(0);
+  noCursor();
+  for(int i = 0; i<starprint;i++){
+    stroke(255);
+    strokeWeight(3);
+    line(starx[i],stary[i],starx[i],stary[i]);
+    
+  }
+  
   triX = mouseX;
   triY = mouseY;
   //basic setup
   if(gamest == 0){
+    bosstime=false;
     textAlign(CENTER);
     textSize(86);
     text("Start", width/2, height/2);
-    fill(0);
+    fill(0,255,0);
     bosshp = 25;
     astDest = 0;
     hitbxX = 1000;
@@ -111,48 +142,65 @@ void draw(){
     
   }
   if(gamest == 2){
+    bosstime=false;
     
     textAlign(CENTER);
     textSize(86);
+    fill(0,255,0);
     text("Game Over", width/2, height/2);
-    fill(0);
+    
     stroke(0);
     ammu = 10;
     astDest = 0;
     
   }
   if(gamest == 3){
+    bosstime=false;
     textAlign(CENTER);
     textSize(86);
+    fill(0,255,0);
     text("You Win!", width/2, height/2);
-    fill(0);
+    
     stroke(0);
     ammu = 10;
     
+    
   }
   if(gamest == 4){
+    bosstime=false;
     textAlign(CENTER);
-    textSize(66);
-    text("You Destroyed Your Own Base!\n You Monster...", width/2, height/2);
-    fill(0);
+    textSize(56);
+    text("You've Destroyed Your Own Planet!\n You Monster...", width/2, height/2);
+    fill(0,255,0);
     stroke(0);
     ammu = 10;
   }
   
   if( gamest == 1){
+    bosstime=false;
+    
+    
+//Player HP
+    if(hp <= 0){
+      gamest = 2;
+    }
 //BOSS SPAWNS
-    if(astDest >= 1){
+    if(astDest >= 10){
+      bosstime=true;
+      rectMode(CENTER);
+      fill(0);
+      rect(hitbxX,hitbxY - 109,25*10,20);
+      fill(0,255,0);
+      rect(hitbxX,hitbxY - 109,bosshp*10,20);
       textAlign(CENTER);
       textSize(24);
-      fill(0);
+      fill(255);
       text("Boss HP: " + bosshp, width/2,height/2 - 100);
-      color posxy = get(mouseX,mouseY-30);
-      //color negxy = get(mouseX-10,mouseY-10);
-      if(color(posxy) == color(255,0,0)){
-        gamest = 2;
-      }
+      
+      
       
         for(int i = 0; i<num;i+=1){   
+        fill(255);
         stroke(255,0,0);
         line(wid, hi, adpoix[i], adpoiy[i]);
         
@@ -163,17 +211,19 @@ void draw(){
         ellipse(npoix[i],npoiy[i], bossatk, bossatk);
         ellipse(adpoix1[i],adpoiy1[i], bossatk, bossatk);
         ellipse(adpoix[i],adpoiy[i], bossatk, bossatk);
-        if(triY <= adpoiy[i]+35 && triY >= adpoiy[i] - 35 && triX <= adpoix[i]+35 && triX >= adpoix[i] - 35){
-          gamest = 2;
-        }
-        if(triY <= adpoiy1[i]+35 && triY >= adpoiy1[i] - 35 && triX <= adpoix1[i]+35 && triX >= adpoix1[i] - 35){
-          gamest = 2;
-        }
-        if(triY <= npoiy[i]+35 && triY >= npoiy[i] - 35 && triX <= npoix[i]+35 && triX >= npoix[i] - 35){
-          gamest = 2;
-        }
-        if(triY <= npoiy1[i]+35 && triY >= npoiy1[i] -35 && triX <= npoix1[i]+35 && triX >= npoix1[i] - 35){
-          gamest = 2;
+        if(bosstime == true){
+          if(triY <= adpoiy[i]+35 && triY >= adpoiy[i] - 35 && triX <= adpoix[i]+35 && triX >= adpoix[i] - 35){
+            hp-=2;
+          }
+          if(triY <= adpoiy1[i]+35 && triY >= adpoiy1[i] - 35 && triX <= adpoix1[i]+35 && triX >= adpoix1[i] - 35){
+            hp-= 2;
+          }
+          if(triY <= npoiy[i]+35 && triY >= npoiy[i] - 35 && triX <= npoix[i]+35 && triX >= npoix[i] - 35){
+            hp -= 2;
+          }
+          if(triY <= npoiy1[i]+35 && triY >= npoiy1[i] -35 && triX <= npoix1[i]+35 && triX >= npoix1[i] - 35){
+            hp -= 2;
+          }
         }
       }
       
@@ -194,8 +244,8 @@ void draw(){
     }
     textAlign(CENTER);
     textSize(24);
-    fill(0);
-    text("Ammo: " + ammu, width/2,20);
+    fill(0,255,0);
+    
     text("Rocks Smashed: " + astDest, width/2,40);
     
 //BASE KILLED by Asteroid
@@ -242,25 +292,19 @@ void draw(){
     
     
   }
-//Player Touches Tendril Ball
-if(triY <= adpoiy[0]+50 && triY >= adpoiy[0] - 50 && triX <= adpoix[0]+35 && triX >= adpoix[0] - 35){
-    gamest = 2;
-  }
-if(triY <= adpoiy1[0]+50 && triY >= adpoiy1[0] - 50 && triX <= adpoix1[0]+35 && triX >= adpoix1[0] - 35){
-    gamest = 2;
-  }
-if(triY <= npoiy[0]+50 && triY >= npoiy[0] - 50 && triX <= npoix[0]+35 && triX >= npoix[0] - 35){
-    gamest = 2;
-  }
-if(triY <= npoiy1[0]+50 && triY >= npoiy1[0] - 50 && triX <= npoix1[0]+35 && triX >= npoix1[0] - 35){
-    gamest = 2;
-  }
+
 
   
 //Player Touches Boss
   if(triY <= hitbxY+50 && triY >= hitbxY - 50 && triX <= hitbxX+35 && triX >= hitbxX - 35){
     gamest = 2;
   }
+//Player Touches Asteroid
+if(triY <= tary+35 && triY >= tary - 35 && triX <= tarx+35 && triX >= tary - 35){
+    hp -= 2;
+  }
+
+
   
 //Bullet hits Asteroid
   if(y <= tary+50 && y >= tary-50 && msx[0] <= tarx + 50 && msx[0] >= tarx - 50){
@@ -286,6 +330,19 @@ if(triY <= npoiy1[0]+50 && triY >= npoiy1[0] - 50 && triX <= npoix1[0]+35 && tri
   Ammo();
   
 
+//Show Ammo
+
+  
+    rectMode(CENTER);
+    fill(255,0,255);
+    rect(triX - 50,triY,20,ammu*10);
+    
+//Show HP
+    rectMode(CENTER);
+    fill(0,255,0);
+    rect(triX - 35,triY,20,hp*10);
+    
+
   
   
 //did you shoot?
@@ -297,6 +354,8 @@ if(triY <= npoiy1[0]+50 && triY >= npoiy1[0] - 50 && triX <= npoix1[0]+35 && tri
     
     if(y>=0){
       y-= 10;
+      stroke(0,255,0);
+      strokeWeight(5);
       line(msx[0],y+10,msx[0],y);
       
       
@@ -319,15 +378,21 @@ void keyPressed(){
    if(key == 'r'){
       ammu++;
    }
+   if(key == ESC){
+     exit();
+   }
 }
 void mousePressed(){
   if(gamest == 0){
+      hp = 10;
       basex = width/2;
       basey = height-100;
+      
       gamest = 1;
     }
 
   if(gamest == 1){
+    
     msx[0] = mouseX;
     y = mouseY;
     
@@ -336,9 +401,12 @@ void mousePressed(){
     
    }
    if(gamest == 2){
+     
+    
      gamest = 0;
    }
    if(gamest == 3){
+     speed += 2;
      gamest = 0;
    }
    if(gamest == 4){
@@ -357,6 +425,7 @@ void base(){
   int diameter = 60;
   fill(0,0,255);
   ellipse(basex, basey,diameter,diameter);
+  fill(0,235,5);
   gun(x,y);
   
   
@@ -371,7 +440,7 @@ void Ammo(){
    
     textAlign(CENTER);
     textSize(86);
-    fill(0);
+    fill(0,255,0);
     text("Reload [R]", width/2, height/2);
     ammu = 0;
     
