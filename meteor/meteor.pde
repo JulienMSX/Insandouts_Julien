@@ -1,6 +1,6 @@
 //import processing.sound.*;
 
-int ax,ay,x,y,tarx,tary,movrand, ammu,hp;
+int ax,ay,x,y,tarx,tary,movrand, ammu,hp,level;
 int direct = 1;
 int[] astx = new int[100];
 float[] asty = new float[100];
@@ -62,7 +62,7 @@ class Boom{
 
 
 void setup(){
-  
+  level = 0;
   stars =0;
   hp = 10;
   //BOSS
@@ -130,6 +130,7 @@ void draw(){
   triY = mouseY;
   //basic setup
   if(gamest == 0){
+    
     bosstime=false;
     textAlign(CENTER);
     textSize(86);
@@ -142,7 +143,10 @@ void draw(){
     
   }
   if(gamest == 2){
+    
     bosstime=false;
+    level = 1;
+    speed = 5;
     
     textAlign(CENTER);
     textSize(86);
@@ -159,7 +163,10 @@ void draw(){
     textAlign(CENTER);
     textSize(86);
     fill(0,255,0);
+    
     text("You Win!", width/2, height/2);
+    text("Onto Level " + level,width/2,height/2+100);
+    
     
     stroke(0);
     ammu = 10;
@@ -167,7 +174,9 @@ void draw(){
     
   }
   if(gamest == 4){
+    level = 1;
     bosstime=false;
+    speed = 5;
     textAlign(CENTER);
     textSize(56);
     text("You've Destroyed Your Own Planet!\n You Monster...", width/2, height/2);
@@ -211,6 +220,33 @@ void draw(){
         ellipse(npoix[i],npoiy[i], bossatk, bossatk);
         ellipse(adpoix1[i],adpoiy1[i], bossatk, bossatk);
         ellipse(adpoix[i],adpoiy[i], bossatk, bossatk);
+        if(level > 1){
+          
+            
+            line(wid, hi/2, adpoix[i], adpoiy[i]/2);
+        
+            line(wid, hi/2, adpoix1[i], adpoiy1[i]/2);
+            line(wid, hi/2, npoix[i], npoiy[i]/2);
+            line(wid, hi/2, npoix1[i], npoiy1[i]/2); 
+            ellipse(npoix1[i],npoiy1[i]/2, bossatk, bossatk);
+            ellipse(npoix[i],npoiy[i]/2, bossatk, bossatk);
+            ellipse(adpoix1[i],adpoiy1[i]/2, bossatk, bossatk);
+            ellipse(adpoix[i],adpoiy[i]/2, bossatk, bossatk);
+            if(level >2){
+              line(wid, hi/1.5, adpoix[i], adpoiy[i]/2);
+        
+              line(wid, hi/1.5, adpoix1[i], adpoiy1[i]/2);
+              line(wid, hi/1.5, npoix[i], npoiy[i]/2);
+              line(wid, hi/1.5, npoix1[i], npoiy1[i]/2); 
+              ellipse(npoix1[i],npoiy1[i]/1.5, bossatk, bossatk);
+              ellipse(npoix[i],npoiy[i]/1.5, bossatk, bossatk);
+              ellipse(adpoix1[i],adpoiy1[i]/1.5, bossatk, bossatk);
+              ellipse(adpoix[i],adpoiy[i]/1.5, bossatk, bossatk);
+            }
+          
+          
+        }
+        
         if(bosstime == true){
           if(triY <= adpoiy[i]+35 && triY >= adpoiy[i] - 35 && triX <= adpoix[i]+35 && triX >= adpoix[i] - 35){
             hp-=2;
@@ -238,6 +274,7 @@ void draw(){
       
       clean();
       if(bosshp <= 0){
+        level++;
         gamest = 3;
       }
       
@@ -461,7 +498,7 @@ void asteroid(int start){
    tary = 0 + ay;
   
     ax+= movrand;
-    ay+=5;
+    ay+=speed;
   
     ellipse(start+ax,0+ay,30,30);
   
