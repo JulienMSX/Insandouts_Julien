@@ -1,6 +1,6 @@
 //import processing.sound.*;
 
-int ax,ay,x,y,tarx,tary,movrand, ammu,hp,level;
+int ax,ay,x,y,tarx,tary,movrand, ammu,hp,level,plyspeed,totalDest;
 int direct = 1;
 int[] astx = new int[100];
 float[] asty = new float[100];
@@ -62,7 +62,9 @@ class Boom{
 
 
 void setup(){
-  level = 0;
+  totalDest = 0;
+  plyspeed = 100;
+  level = 1;
   stars =0;
   hp = 10;
   //BOSS
@@ -156,6 +158,8 @@ void draw(){
     stroke(0);
     ammu = 10;
     astDest = 0;
+    totalDest = 0;
+    
     
   }
   if(gamest == 3){
@@ -184,6 +188,17 @@ void draw(){
     stroke(0);
     ammu = 10;
   }
+  if(gamest == 5){
+    level = 1;
+    bosstime=false;
+    speed = 5;
+    textAlign(CENTER);
+    textSize(56);
+    text("Kamikaze Attacks are Frowned Upon", width/2, height/2);
+    fill(0,255,0);
+    stroke(0);
+    ammu = 10;
+  }
   
   if( gamest == 1){
     bosstime=false;
@@ -191,6 +206,7 @@ void draw(){
     
 //Player HP
     if(hp <= 0){
+      println("player killed");
       gamest = 2;
     }
 //BOSS SPAWNS
@@ -250,15 +266,20 @@ void draw(){
         if(bosstime == true){
           if(triY <= adpoiy[i]+35 && triY >= adpoiy[i] - 35 && triX <= adpoix[i]+35 && triX >= adpoix[i] - 35){
             hp-=2;
+            println("hit by boss");
+            
           }
           if(triY <= adpoiy1[i]+35 && triY >= adpoiy1[i] - 35 && triX <= adpoix1[i]+35 && triX >= adpoix1[i] - 35){
             hp-= 2;
+            println("hit by boss");
           }
           if(triY <= npoiy[i]+35 && triY >= npoiy[i] - 35 && triX <= npoix[i]+35 && triX >= npoix[i] - 35){
             hp -= 2;
+            println("hit by boss");
           }
           if(triY <= npoiy1[i]+35 && triY >= npoiy1[i] -35 && triX <= npoix1[i]+35 && triX >= npoix1[i] - 35){
             hp -= 2;
+            println("hit by boss");
           }
         }
       }
@@ -283,13 +304,14 @@ void draw(){
     textSize(24);
     fill(0,255,0);
     
-    text("Rocks Smashed: " + astDest, width/2,40);
+    text("Rocks Smashed: " + totalDest, width/2,40);
+    text("LEVEL: " + level, width/2,60);
     
 //BASE KILLED by Asteroid
   base();
-  if(basey <= tary+50 && basex <= tarx + 50 && basex >= tarx - 50){
+  if(basey <= tary+50 && basey >= tary - 50 && basex <= tarx + 50 && basex >= tarx - 50){
     randx = int(random(100));
-    println("shot");
+    println("base kill by asteroid");
     asteroid(astx[randx]);
     movrand = int(random(-5,5));
     ax=0;
@@ -304,7 +326,7 @@ void draw(){
 //Base Killed by YOU
   if(y <= basey+50 && y >= basey-50 && msx[0] <= basex + 50 && msx[0] >= basex - 50){
     randx = int(random(100));
-    println("shot");
+    println("base killed by you");
     asteroid(astx[randx]);
     movrand = int(random(-5,5));
     ax=0;
@@ -320,7 +342,7 @@ void draw(){
   asteroid(astx[randx]);
   if(tary > height || tarx > width || tarx < -10){
     randx = int(random(100));
-    println("shot");
+    println("astroid spawned");
     asteroid(astx[randx]);
     movrand = int(random(-5,5));
     ax=0;
@@ -334,11 +356,12 @@ void draw(){
   
 //Player Touches Boss
   if(triY <= hitbxY+50 && triY >= hitbxY - 50 && triX <= hitbxX+35 && triX >= hitbxX - 35){
-    gamest = 2;
+    gamest = 5;
   }
 //Player Touches Asteroid
-if(triY <= tary+35 && triY >= tary - 35 && triX <= tarx+35 && triX >= tary - 35){
+if(triY <= tary+20 && triY >= tary - 20 && triX <= tarx+20 && triX >= tarx - 20){
     hp -= 2;
+    println("hit by asteroid");
   }
 
 
@@ -349,6 +372,7 @@ if(triY <= tary+35 && triY >= tary - 35 && triX <= tarx+35 && triX >= tary - 35)
     println("shot");
     asteroid(astx[randx]);
     astDest++;
+    totalDest++;
     movrand = int(random(-5,5));
     ax=0;
     ay=0;
@@ -400,7 +424,7 @@ if(triY <= tary+35 && triY >= tary - 35 && triX <= tarx+35 && triX >= tary - 35)
     if(y <= 0){
       trig = false;
       
-      y = mouseY;
+      y = -10000;
     }
     
     
@@ -418,6 +442,18 @@ void keyPressed(){
    if(key == ESC){
      exit();
    }
+   /*if(key == 'w' || key == UP){
+     triY-=plyspeed;
+   }
+   if(key == 's' || key == DOWN){
+     triY+=plyspeed;
+   }
+   if(key == 'a' || key == RIGHT){
+     triX-=plyspeed;
+   }
+   if(key == 'd' || key == LEFT){
+     triX+=plyspeed;
+   }*/
 }
 void mousePressed(){
   if(gamest == 0){
@@ -449,6 +485,10 @@ void mousePressed(){
    if(gamest == 4){
      gamest = 2;
    }
+   if(gamest == 5){
+     gamest = 2;
+   }
+   
 
   
   
@@ -495,7 +535,7 @@ void gun(int posX,int posY){
 void asteroid(int start){
   
    tarx = start + ax;
-   tary = 0 + ay;
+   tary = -20 + ay;
   
     ax+= movrand;
     ay+=speed;
@@ -541,9 +581,15 @@ void fib(){
 
 void clean(){
   for(int i = 0; i < num; i++){
-    adpoix[i] = 0;
+    /*adpoix[i] = 0;
     adpoiy[i] = 0;
-    fib[i] = 0;
+    adpoix1[i] = 0;
+    adpoiy1[i] = 0;
+    npoix[i] = 0;
+    npoiy[i] = 0;
+    npoix1[i] = 0;
+    npoiy[i] = 0;
+    fib[i] = 0;*/
     a = 0;
     b = 1;
     c = a+b;
