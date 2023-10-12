@@ -1,4 +1,11 @@
-//import processing.sound.*;
+import processing.sound.*;
+SoundFile lvlmu1;
+SoundFile lvlmu2;
+SoundFile lvlmu3;
+SoundFile lvlmu4;
+SoundFile lvlmu5;
+SoundFile lvlmu6;
+SoundFile pew;
 
 int ax,ay,x,y,tarx,tary,movrand, ammu,hp,level,plyspeed,totalDest;
 int direct = 1;
@@ -62,15 +69,26 @@ class Boom{
 
 
 void setup(){
+//MUSIC 
+  lvlmu1 = new SoundFile(this,"level1.mp3");
+  lvlmu2 = new SoundFile(this,"firstboss.mp3");
+  lvlmu3 = new SoundFile(this,"level1.mp3");
+  lvlmu4 = new SoundFile(this,"secondboss.mp3");
+  lvlmu5 = new SoundFile(this,"level3.mp3");
+  lvlmu6 = new SoundFile(this,"level+.mp3");
+  pew = new SoundFile(this, "holy.mp3");
+  
+
+  
   totalDest = 0;
   plyspeed = 100;
   level = 1;
   stars =0;
   hp = 10;
-  //BOSS
+//BOSS
   bosstime=false;
   speed = 10;
-  //GAME
+//GAME
  
   size(900,900);
   bossatk = 50;
@@ -116,8 +134,10 @@ void setup(){
   }
   
   
+  
 }
 void draw(){
+  
   //println(ammu);
   background(0);
   noCursor();
@@ -201,6 +221,19 @@ void draw(){
   }
   
   if( gamest == 1){
+    if(lvlmu1.isPlaying()){
+      
+    }
+    else{
+       song(1);
+    }
+    
+    
+      
+   
+    
+    
+    
     bosstime=false;
     
     
@@ -211,6 +244,18 @@ void draw(){
     }
 //BOSS SPAWNS
     if(astDest >= 10){
+      if(lvlmu2.isPlaying()){
+        lvlmu1.stop();
+        
+      }
+      else{
+        lvlmu1.stop();
+        song(2);
+      }
+      
+      
+      
+      
       bosstime=true;
       rectMode(CENTER);
       fill(0);
@@ -237,6 +282,16 @@ void draw(){
         ellipse(adpoix1[i],adpoiy1[i], bossatk, bossatk);
         ellipse(adpoix[i],adpoiy[i], bossatk, bossatk);
         if(level > 1){
+          if(lvlmu4.isPlaying()){
+            lvlmu1.stop();
+            lvlmu2.stop();
+        
+            }
+            else{
+              lvlmu1.stop();
+              lvlmu2.stop();
+              song(4);
+            }
           
             
             line(wid, hi/2, adpoix[i], adpoiy[i]/2);
@@ -249,6 +304,18 @@ void draw(){
             ellipse(adpoix1[i],adpoiy1[i]/2, bossatk, bossatk);
             ellipse(adpoix[i],adpoiy[i]/2, bossatk, bossatk);
             if(level >2){
+               if(lvlmu5.isPlaying()){
+                  lvlmu1.stop();
+                  lvlmu2.stop();
+                  lvlmu4.stop();
+        
+                }
+                else{
+                  lvlmu1.stop();
+                  lvlmu2.stop();
+                  lvlmu4.stop();
+                  song(5);
+                }
               line(wid, hi/1.5, adpoix[i], adpoiy[i]/2);
         
               line(wid, hi/1.5, adpoix1[i], adpoiy1[i]/2);
@@ -263,7 +330,7 @@ void draw(){
           
         }
         
-        if(bosstime == true){
+       
           if(triY <= adpoiy[i]+35 && triY >= adpoiy[i] - 35 && triX <= adpoix[i]+35 && triX >= adpoix[i] - 35){
             hp-=2;
             println("hit by boss");
@@ -281,7 +348,7 @@ void draw(){
             hp -= 2;
             println("hit by boss");
           }
-        }
+        
       }
       
       fill(255,0,0);
@@ -411,6 +478,7 @@ if(triY <= tary+20 && triY >= tary - 20 && triX <= tarx+20 && triX >= tarx - 20)
   
   if(trig == true && ammu > 0){
     
+    
    
     
     if(y>=0){
@@ -422,6 +490,7 @@ if(triY <= tary+20 && triY >= tary - 20 && triX <= tarx+20 && triX >= tarx - 20)
       
     }
     if(y <= 0){
+      
       trig = false;
       
       y = -10000;
@@ -457,6 +526,10 @@ void keyPressed(){
 }
 void mousePressed(){
   if(gamest == 0){
+      stopmu();
+      
+      
+      
       hp = 10;
       basex = width/2;
       basey = height-100;
@@ -468,7 +541,7 @@ void mousePressed(){
     
     msx[0] = mouseX;
     y = mouseY;
-    
+    pew.play();  
     trig = true;
     ammu--;
     
@@ -626,4 +699,62 @@ void circ(){
   if(pointy<= hi*2){
     pointx-=speed;
   }
+}
+
+
+void song(int on){
+   //stopmu();
+  
+  if(on == 1){
+      
+    
+     lvlmu1.loop();
+     lvlmu1.amp(.5);
+    }
+   else if(on == 2){
+     
+     
+     lvlmu2.loop();
+     lvlmu2.amp(.5);
+   }
+   else if(on == 3){
+    
+     lvlmu3.loop();
+     lvlmu3.amp(.5);
+     
+    
+   }
+   else if(on == 4){
+     
+     
+      lvlmu4.loop();
+     lvlmu4.amp(.5);
+     
+   }
+   else if(on == 5){
+     
+      lvlmu5.loop();
+     lvlmu5.amp(.5);
+     
+   }
+   else if(on == 6){
+     
+      lvlmu6.loop();
+     lvlmu6.amp(.5);
+     
+   }
+   else{
+     stopmu();
+     
+   }
+  
+   
+}
+void stopmu(){
+  lvlmu1.stop();
+  lvlmu2.stop();
+  lvlmu3.stop();
+  lvlmu4.stop();
+  lvlmu5.stop();
+  lvlmu6.stop();
 }
