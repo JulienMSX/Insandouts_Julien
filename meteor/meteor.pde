@@ -77,6 +77,7 @@ void setup(){
   lvlmu5 = new SoundFile(this,"level3.mp3");
   lvlmu6 = new SoundFile(this,"level+.mp3");
   pew = new SoundFile(this, "holy.mp3");
+  pew.amp(.5);
   
 
   
@@ -88,17 +89,19 @@ void setup(){
 //BOSS
   bosstime=false;
   speed = 10;
+  bossatk = 50;
+  bosshp = 25;
+  hitbxX=1000;
+  hitbxY = 1000;
 //GAME
  
   size(900,900);
-  bossatk = 50;
+  
   pointx = 0;
   pointy = hi*2;
   npointx = wid*2;
   npointy = 0;
-  bosshp = 25;
-  hitbxX=1000;
-  hitbxY = 1000;
+  
   hi = height/2;
   wid = width/2;
   
@@ -137,6 +140,9 @@ void setup(){
   
 }
 void draw(){
+  if(hp >= 10){
+    hp = 10;
+  }
   
   //println(ammu);
   background(0);
@@ -168,7 +174,7 @@ void draw(){
     
     bosstime=false;
     level = 1;
-    speed = 5;
+    //speed = 5;
     
     textAlign(CENTER);
     textSize(86);
@@ -200,7 +206,7 @@ void draw(){
   if(gamest == 4){
     level = 1;
     bosstime=false;
-    speed = 5;
+    //speed = 5;
     textAlign(CENTER);
     textSize(56);
     text("You've Destroyed Your Own Planet!\n You Monster...", width/2, height/2);
@@ -211,7 +217,7 @@ void draw(){
   if(gamest == 5){
     level = 1;
     bosstime=false;
-    speed = 5;
+    //speed = 5;
     textAlign(CENTER);
     textSize(56);
     text("Kamikaze Attacks are Frowned Upon", width/2, height/2);
@@ -219,7 +225,7 @@ void draw(){
     stroke(0);
     ammu = 10;
   }
-  
+//PLAY MUSIC 
   if( gamest == 1){
     if(lvlmu1.isPlaying()){
       
@@ -227,8 +233,13 @@ void draw(){
     else{
        song(1);
     }
-    
-    
+//MOVE STARS
+    for(int i = 0; i < stary.length; i++){
+      stary[i]++;
+      if(stary[i] > height){
+        stary[i] = 0;
+      }
+    }
       
    
     
@@ -244,6 +255,7 @@ void draw(){
     }
 //BOSS SPAWNS
     if(astDest >= 10){
+//PLAY BOSS MUSIC
       if(lvlmu2.isPlaying()){
         lvlmu1.stop();
         
@@ -254,7 +266,7 @@ void draw(){
       }
       
       
-      
+//DRAW BOSS HEALTH    
       
       bosstime=true;
       rectMode(CENTER);
@@ -269,7 +281,24 @@ void draw(){
       
       
       
-        for(int i = 0; i<num;i+=1){   
+        for(int i = 0; i<num;i+=1){
+           if(triY <= adpoiy[i]+35 && triY >= adpoiy[i] - 35 && triX <= adpoix[i]+35 && triX >= adpoix[i] - 35){
+            hp-=2;
+            println("hit by boss");
+            
+          }
+          if(triY <= adpoiy1[i]+35 && triY >= adpoiy1[i] - 35 && triX <= adpoix1[i]+35 && triX >= adpoix1[i] - 35){
+            hp-= 2;
+            println("hit by boss");
+          }
+          if(triY <= npoiy[i]+35 && triY >= npoiy[i] - 35 && triX <= npoix[i]+35 && triX >= npoix[i] - 35){
+            hp -= 2;
+            println("hit by boss");
+          }
+          if(triY <= npoiy1[i]+35 && triY >= npoiy1[i] -35 && triX <= npoix1[i]+35 && triX >= npoix1[i] - 35){
+            hp -= 2;
+            println("hit by boss");
+          }
         fill(255);
         stroke(255,0,0);
         line(wid, hi, adpoix[i], adpoiy[i]);
@@ -291,6 +320,23 @@ void draw(){
               lvlmu1.stop();
               lvlmu2.stop();
               song(4);
+            }
+            if(triY <= adpoiy[i]/2 +20  && triY >= adpoiy[i]/2 - 20  && triX <= adpoix[i] +20 && triX >= adpoix[i] -20){
+            hp-=2;
+            println("hit by boss");
+            
+            }
+            if(triY <= adpoiy1[i]/2 +20 && triY >= adpoiy1[i]/2 - 20 && triX <= adpoix1[i]+20 && triX >= adpoix1[i] - 20){
+              hp-= 2;
+              println("hit by boss");
+            }
+            if(triY <= npoiy[i]/2+20 && triY >= npoiy[i]/2 - 20 && triX <= npoix[i]+20 && triX >= npoix[i] - 20){
+              hp -= 2;
+              println("hit by boss");
+            }
+            if(triY <= npoiy1[i]/2+20 && triY >= npoiy1[i]/2 -20 && triX <= npoix1[i]+20 && triX >= npoix1[i] - 20){
+              hp -= 2;
+              println("hit by boss");
             }
           
             
@@ -331,23 +377,7 @@ void draw(){
         }
         
        
-          if(triY <= adpoiy[i]+35 && triY >= adpoiy[i] - 35 && triX <= adpoix[i]+35 && triX >= adpoix[i] - 35){
-            hp-=2;
-            println("hit by boss");
-            
-          }
-          if(triY <= adpoiy1[i]+35 && triY >= adpoiy1[i] - 35 && triX <= adpoix1[i]+35 && triX >= adpoix1[i] - 35){
-            hp-= 2;
-            println("hit by boss");
-          }
-          if(triY <= npoiy[i]+35 && triY >= npoiy[i] - 35 && triX <= npoix[i]+35 && triX >= npoix[i] - 35){
-            hp -= 2;
-            println("hit by boss");
-          }
-          if(triY <= npoiy1[i]+35 && triY >= npoiy1[i] -35 && triX <= npoix1[i]+35 && triX >= npoix1[i] - 35){
-            hp -= 2;
-            println("hit by boss");
-          }
+         
         
       }
       
@@ -440,6 +470,7 @@ if(triY <= tary+20 && triY >= tary - 20 && triX <= tarx+20 && triX >= tarx - 20)
     asteroid(astx[randx]);
     astDest++;
     totalDest++;
+    hp++;
     movrand = int(random(-5,5));
     ax=0;
     ay=0;
@@ -547,6 +578,8 @@ void mousePressed(){
     
    }
    if(gamest == 2){
+     speed = 10;
+     level=1;
      
     
      gamest = 0;
