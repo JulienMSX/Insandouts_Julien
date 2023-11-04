@@ -1,5 +1,8 @@
-import processing.serial.*; //imports Serial library from Processing
+//music by eddie.ewi
 
+import processing.serial.*; //imports Serial library from Processing
+import processing.sound.*;
+SoundFile lvlmu1;
 Serial myPort; // creates object from Serial class
 int val=0;
 
@@ -31,6 +34,7 @@ int car1x = 0;
 int car2x = 50;
 int car3x = 0;
 void setup(){
+  lvlmu1 = new SoundFile(this,"Bloopin.mp3");
   
   
   speed = 1;
@@ -290,6 +294,10 @@ void draw(){
 }
 void keyPressed(){
   if(key == 'l' && st == 0 || key == 'l' && st == 2){
+    lvlmu1.stop();
+    
+    lvlmu1.loop();
+    lvlmu1.amp(.2);
     snakeL = 0;
       moveLR = grid[25];
       moveUD = grid[40];
